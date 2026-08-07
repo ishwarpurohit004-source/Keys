@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>All Mods Keys</title>
+    <style>
+        /* ========== RESET & BODY ========== */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, Arial, sans-serif; }
+        body { background: #f0f0f0; display: flex; justify-content: center; min-height: 100vh; }
+        
+        /* ========== APP CONTAINER ========== */
+        .app-container {
+            width: 100%;
+            max-width: 480px;
+            background: #f5f5f5;
+            min-height: 100vh;
+            position: relative;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+
+        /* ========== HEADER ========== */
+        .app-header {
+            background: #ffffff;
+            padding: 18px 20px;
+            border-bottom: 1px solid #e5e5e5;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+        .header-title h1 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #000;
+            letter-spacing: -0.5px;
+        }
+        .header-title span { font-size: 11px; color: #888; display: block; margin-top: 2px; }
+        
+        .auth-btn {
+            background: transparent;
+            border: 1px solid #000;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            color: #000;
+            transition: 0.2s;
+        }
+        .auth-btn:active { transform: scale(0.95); }
+        .auth-btn.logged { background: #d32f2f; color: #fff; border-color: #d32f2f; }
+
+        /* ========== ADMIN ADD FORM ========== */
+        .admin-form {
+            background: #ffffff;
+            padding: 16px;
+            margin: 12px 16px;
+            border-radius: 12px;
+            border: 1px solid #e0e0e0;
+            display: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        .admin-form.visible { display: block; }
+        .admin-form h3 { font-size: 16px; margin-bottom: 10px; display: flex; gap: 8px; }
+        .admin-form input {
+            width: 100%;
+            padding: 10px 12px;
+            margin-bottom: 8px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+        }
+        .admin-form input:focus { border-color: #1a73e8; }
+        .btn-submit-form {
+            width: 100%;
+            background: #1a73e8;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .btn-submit-form:active { transform: scale(0.98); }
+
+        /* ========== GAME LIST ========== */
+        .game-list {
+            padding: 0;
+            background: #ffffff;
+            display: flex;
+            flex-direction: column;
+            margin-top: 10px;
+        }
+        .game-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            border-bottom: 8px solid #f5f5f5;
+            background: #fff;
+            position: relative;
+        }
+        .game-item:last-child { border-bottom: none; }
+        
+        .game-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            background: #e0e0e0;
+            margin-right: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+        .game-icon img { width: 100%; height: 100%; object-fit: cover; }
+
+        .game-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            margin-right: 8px;
+            min-width: 0;
+        }
+        .game-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: #222;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .game-key {
+            font-size: 11px;
+            color: #888;
+            margin-top: 2px;
+            font-family: 'Consolas', monospace;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .item-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+        .btn-copy {
+            background: #1a73e8;
+            color: white;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        .btn-copy:active { opacity: 0.7; transform: scale(0.95); }
+        .btn-copy.copied { background: #34a853; }
+        
+        .btn-delete {
+            background: transparent;
+            border: none;
+            color: #d32f2f;
+            font-size: 18px;
+            cursor: pointer;
+            display: none;
+            padding: 0 4px;
+        }
+        .btn-delete.visible { display: block; }
+
+        /* ========== EMPTY STATE ========== */
+        .empty-state {
+            padding: 40px;
+            text-align: center;
+            color: #888;
+            font-size: 15px;
+        }
+        .empty-state .icon { font-size: 40px; margin-bottom: 10px; }
+
+        /* ========== LOGIN MODAL ========== */
+        .login-modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+        }
+        .login-box {
+            background: white;
+            padding: 30px 24px;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 340px;
+            text-align: center;
+        }
+        .login-box h2 { font-size: 20px; margin-bottom: 20px; }
+        .login-box input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 15px;
+            outline: none;
+        }
+        .login-box input:focus { border-color: #1a73e8; }
+        .login-box .btn-login {
+            width: 100%;
+            background: #000;
+            color: #fff;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .login-box .close-login {
+            margin-top: 12px;
+            display: block;
+            color: #888;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        /* ========== TOAST ========== */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9999;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+        .toast {
+            background: #333;
+            color: #fff;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 14px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            animation: toastAnim 2.5s forwards;
+            margin-bottom: 8px;
+        }
+        .toast.error { background: #d32f2f; }
+        .toast.success { background: #1a73e8; }
+        @keyframes toastAnim {
+            0% { transform: translateY(-30px); opacity: 0; }
+            15% { transform: translateY(0); opacity: 1; }
+            85% { transform: translateY(0); opacity: 1; }
+            100% { transform: translateY(-30px); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ========== APP CONTAINER ========== -->
+    <div class="app-container">
+
+        <!-- HEADER -->
+        <div class="app-header">
+            <div class="header-title">
+                <h1>All Mods Keys</h1>
+                <span>Latest Keys • Secure</span>
+            </div>
+            <button id="authToggleBtn" class="auth-btn" onclick="toggleAuthModal()">🔐 Login</button>
+        </div>
+
+        <!-- ADMIN FORM -->
+        <div class="admin-form" id="adminForm">
+            <h3>➕ Add New Game Key</h3>
+            <input type="text" id="inputName" placeholder="Game Name (e.g. Shadow Fight)">
+            <input type="text" id="inputKey" placeholder="Game Key">
+            <input type="text" id="inputImage" placeholder="Game Icon URL (Optional)">
+            <button class="btn-submit-form" onclick="addGame()">✅ Save Key</button>
+        </div>
+
+        <!-- GAME LIST -->
+        <div class="game-list" id="gameList">
+            <!-- Items will be rendered here -->
+        </div>
+
+    </div>
+
+    <!-- ========== LOGIN MODAL ========== -->
+    <div class="login-modal" id="loginModal">
+        <div class="login-box">
+            <h2>🔐 Admin Login</h2>
+            <input type="text" id="loginUser" placeholder="Username" autocomplete="off">
+            <input type="password" id="loginPass" placeholder="Password">
+            <button class="btn-login" onclick="performLogin()">Login</button>
+            <span class="close-login" onclick="closeLoginModal()">Cancel</span>
+        </div>
+    </div>
+
+    <!-- TOAST CONTAINER -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script>
+        // ================= DATA & STORAGE =================
+        const STORAGE_KEY = 'modKeys_data';
+        let isAdmin = false;
+
+        // Safe fetching logic
+        function getGames() {
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY);
+                if (!raw) return [];
+                const parsed = JSON.parse(raw);
+                return Array.isArray(parsed) ? parsed : [];
+            } catch (error) {
+                return []; // Agar data corrupt ho jaye toh bhi crash nahi hoga
+            }
+        }
+
+        function saveGames(games) {
+            if (!Array.isArray(games)) return;
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(games));
+        }
+
+        // ================= TOAST SYSTEM =================
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerText = message;
+            container.appendChild(toast);
+            setTimeout(() => {
+                if (toast.parentNode) toast.remove();
+            }, 2500);
+        }
+
+        // ================= AUTH LOGIC =================
+        function toggleAuthModal() {
+            document.getElementById('loginModal').style.display = 'flex';
+        }
+
+        function closeLoginModal() {
+            document.getElementById('loginModal').style.display = 'none';
+        }
+
+        function performLogin() {
+            const user = document.getElementById('loginUser').value.trim();
+            const pass = document.getElementById('loginPass').value.trim();
+            
+            if (user === 'Ishwar121212' && pass === 'Ishwar121212') {
+                isAdmin = true;
+                closeLoginModal();
+                updateAdminUI();
+                renderList();
+                showToast('✅ Admin Login Successful!');
+            } else {
+                showToast('❌ Wrong Username / Password', 'error');
+            }
+        }
+
+        function logoutUser() {
+            isAdmin = false;
+            updateAdminUI();
+            renderList();
+            showToast('👋 Logged out.');
+        }
+
+        function updateAdminUI() {
+            const form = document.getElementById('adminForm');
+            const btn = document.getElementById('authToggleBtn');
+            
+            if (isAdmin) {
+                form.classList.add('visible');
+                btn.innerText = '🚪 Logout';
+                btn.classList.add('logged');
+                btn.onclick = logoutUser;
+            } else {
+                form.classList.remove('visible');
+                btn.innerText = '🔐 Login';
+                btn.classList.remove('logged');
+                btn.onclick = toggleAuthModal;
+            }
+        }
+
+        // ================= ADD GAME =================
+        function addGame() {
+            if (!isAdmin) { 
+                showToast('Login as Admin first!', 'error'); 
+                return; 
+            }
+
+            const nameInput = document.getElementById('inputName');
+            const keyInput = document.getElementById('inputKey');
+            const iconInput = document.getElementById('inputImage');
+
+            const name = nameInput.value.trim();
+            const key = keyInput.value.trim();
+            const icon = iconInput.value.trim() || '🎮';
+
+            if (!name || !key) {
+                showToast('Please fill Name and Key!', 'error');
+                if (!name) nameInput.focus();
+                else keyInput.focus();
+                return;
+            }
+
+            const games = getGames();
+            const newGame = {
+                id: Date.now(),
+                name: name,
+                key: key,
+                icon: icon
+            };
+            
+            games.unshift(newGame); // Sabse upar new game add hoga
+            saveGames(games);
+
+            // Clear inputs
+            nameInput.value = '';
+            keyInput.value = '';
+            iconInput.value = '';
+            nameInput.focus();
+
+            renderList();
+            showToast(`✅ "${name}" added successfully!`);
+        }
+
+        // ================= DELETE GAME =================
+        function deleteGame(id) {
+            if (!isAdmin) return;
+            
+            const games = getGames();
+            const targetGame = games.find(g => g.id === id);
+            
+            if (!targetGame) return;
+            
+            if (confirm(`Kya aap "${targetGame.name}" ko delete karna chahte hain?`)) {
+                const updatedGames = games.filter(g => g.id !== id);
+                saveGames(updatedGames);
+                renderList();
+                showToast(`🗑️ "${targetGame.name}" deleted!`, 'error');
+            }
+        }
+
+        // ================= COPY KEY =================
+        function copyKey(id, btnElement) {
+            const games = getGames();
+            const game = games.find(g => g.id === id);
+            if (!game) return;
+
+            // Modern Clipboard API
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(game.key).then(() => {
+                    handleCopySuccess(btnElement, game.name);
+                }).catch(() => {
+                    fallbackCopy(game.key, btnElement, game.name);
+                });
+            } else {
+                fallbackCopy(game.key, btnElement, game.name);
+            }
+        }
+
+        function handleCopySuccess(btn, name) {
+            btn.innerText = '✅ Copied';
+            btn.classList.add('copied');
+            showToast(`📋 "${name}" key copied!`);
+            setTimeout(() => {
+                btn.innerText = 'Copy Key';
+                btn.classList.remove('copied');
+            }, 1500);
+        }
+
+        function fallbackCopy(text, btn, name) {
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            document.body.appendChild(textArea);
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                handleCopySuccess(btn, name);
+            } catch (err) {
+                showToast('Copy failed! Copy manually.', 'error');
+            }
+            document.body.removeChild(textArea);
+        }
+
+        // ================= RENDER LIST =================
+        function renderList() {
+            const games = getGames();
+            const listContainer = document.getElementById('gameList');
+
+            if (games.length === 0) {
+                listContainer.innerHTML = `
+                    <div class="empty-state">
+                        <div class="icon">📭</div>
+                        Koi game key nahi hai!<br>
+                        <span style="font-size:13px;">Upar form bhar ke apni pehli game key add karein.</span>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+            games.forEach(game => {
+                // Icon handle karna (URL ho ya Emoji)
+                let iconHtml = '';
+                if (game.icon && game.icon.startsWith('http')) {
+                    iconHtml = `<img src="${game.icon}" alt="icon" onerror="this.parentNode.innerHTML='🎮'">`;
+                } else {
+                    iconHtml = game.icon || '🎮';
+                }
+
+                // Delete button only visible to admin
+                const deleteBtnClass = isAdmin ? 'btn-delete visible' : 'btn-delete';
+
+                html += `
+                    <div class="game-item">
+                        <div class="game-icon">${iconHtml}</div>
+                        <div class="game-info">
+                            <div class="game-title">${game.name}</div>
+                            <div class="game-key">Key: ${game.key}</div>
+                        </div>
+                        <div class="item-actions">
+                            <button class="${deleteBtnClass}" onclick="deleteGame(${game.id})">✕</button>
+                            <button class="btn-copy" onclick="copyKey(${game.id}, this)">Copy Key</button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            listContainer.innerHTML = html;
+        }
+
+        // ================= INITIALIZE =================
+        // Pehli baar mein list render karo
+        renderList();
+        updateAdminUI();
+
+        // Click kahi aur karein toh Modal band ho jaye
+        document.getElementById('loginModal').addEventListener('click', function(e) {
+            if (e.target === this) closeLoginModal();
+        });
+    </script>
+</body>
+</html>
