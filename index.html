@@ -3,20 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>All Mods Keys</title>
+    <title>All Mods Keys • Secure</title>
     <style>
         /* ========== RESET & BODY ========== */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, Arial, sans-serif; }
-        body { background: #f0f0f0; display: flex; justify-content: center; min-height: 100vh; }
-        
-        /* ========== APP CONTAINER ========== */
+        body { background: #e8e8e8; display: flex; justify-content: center; min-height: 100vh; }
+
         .app-container {
             width: 100%;
             max-width: 480px;
-            background: #f5f5f5;
+            background: #f9f9f9;
             min-height: 100vh;
             position: relative;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            box-shadow: 0 0 20px rgba(0,0,0,0.08);
         }
 
         /* ========== HEADER ========== */
@@ -73,8 +72,9 @@
             border-radius: 8px;
             font-size: 14px;
             outline: none;
+            background: #fafafa;
         }
-        .admin-form input:focus { border-color: #1a73e8; }
+        .admin-form input:focus { border-color: #1a73e8; background: #fff; }
         .btn-submit-form {
             width: 100%;
             background: #1a73e8;
@@ -96,6 +96,8 @@
             display: flex;
             flex-direction: column;
             margin-top: 10px;
+            border-radius: 16px 16px 0 0;
+            overflow: hidden;
         }
         .game-item {
             display: flex;
@@ -268,289 +270,195 @@
     </style>
 </head>
 <body>
-
-    <!-- ========== APP CONTAINER ========== -->
     <div class="app-container">
-
-        <!-- HEADER -->
+        <!-- HEADER (Login option removed) -->
         <div class="app-header">
             <div class="header-title">
                 <h1>All Mods Keys</h1>
                 <span>Latest Keys • Secure</span>
             </div>
-            <button id="authToggleBtn" class="auth-btn" onclick="toggleAuthModal()">🔐 Login</button>
+            <div style="font-size: 20px;">🛡️</div>
         </div>
 
-        <!-- ADMIN FORM -->
-        <div class="admin-form" id="adminForm">
-            <h3>➕ Add New Game Key</h3>
-            <input type="text" id="inputName" placeholder="Game Name (e.g. Shadow Fight)">
-            <input type="text" id="inputKey" placeholder="Game Key">
-            <input type="text" id="inputImage" placeholder="Game Icon URL (Optional)">
-            <button class="btn-submit-form" onclick="addGame()">✅ Save Key</button>
-        </div>
-
-        <!-- GAME LIST -->
-        <div class="game-list" id="gameList">
-            <!-- Items will be rendered here -->
-        </div>
-
-    </div>
-
-    <!-- ========== LOGIN MODAL ========== -->
-    <div class="login-modal" id="loginModal">
-        <div class="login-box">
-            <h2>🔐 Admin Login</h2>
-            <input type="text" id="loginUser" placeholder="Username" autocomplete="off">
-            <input type="password" id="loginPass" placeholder="Password">
-            <button class="btn-login" onclick="performLogin()">Login</button>
-            <span class="close-login" onclick="closeLoginModal()">Cancel</span>
-        </div>
+        <!-- GAME LIST (direct) -->
+        <div class="game-list" id="gameList"></div>
     </div>
 
     <!-- TOAST CONTAINER -->
     <div class="toast-container" id="toastContainer"></div>
 
     <script>
-        // ================= DATA & STORAGE =================
-        const STORAGE_KEY = 'modKeys_data';
-        let isAdmin = false;
+        (function() {
+            // ========== DEFAULT GAMES (from request) ==========
+            const DEFAULT_GAMES = [
+                {
+                    id: 101,
+                    name: "Snake lite",
+                    key: "QmhhcmF0IE1lcmEgRGVzaCBIYQ==",
+                    icon: "https://yjjmibdxyezdjmaztnpm.supabase.co/storage/v1/object/public/app_9k1eb91gwmwx_mod_files/logos/1787215465560_image_search_1787212405177.png"
+                },
+                {
+                    id: 102,
+                    name: "Supermario",
+                    key: "U3VwZXJNYXJpb1R3b0hE",
+                    icon: "https://yjjmibdxyezdjmaztnpm.supabase.co/storage/v1/object/public/app_9k1eb91gwmwx_mod_files/logos/1786436383890_image_search_1786436375770.jpg"
+                },
+                {
+                    id: 103,
+                    name: "Stickmanworrior",
+                    key: "U3RpY2ttYW4gV2FycmlvcnM=",
+                    icon: "https://yjjmibdxyezdjmaztnpm.supabase.co/storage/v1/object/public/app_9k1eb91gwmwx_mod_files/logos/1786182541287_image_search_1786180514543.png"
+                },
+                {
+                    id: 104,
+                    name: "Bullet strike",
+                    key: "WSMODS-20BS26",
+                    icon: "https://yjjmibdxyezdjmaztnpm.supabase.co/storage/v1/object/public/app_9k1eb91gwmwx_mod_files/files/1785833795064_image_search_1785833517037.png"
+                }
+            ];
 
-        // Safe fetching logic
-        function getGames() {
-            try {
+            // Storage key (we'll initialize if empty, but no admin editing)
+            const STORAGE_KEY = 'modKeys_fixed_data_v2';
+
+            function getGames() {
                 const raw = localStorage.getItem(STORAGE_KEY);
-                if (!raw) return [];
-                const parsed = JSON.parse(raw);
-                return Array.isArray(parsed) ? parsed : [];
-            } catch (error) {
-                return []; // Agar data corrupt ho jaye toh bhi crash nahi hoga
-            }
-        }
-
-        function saveGames(games) {
-            if (!Array.isArray(games)) return;
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(games));
-        }
-
-        // ================= TOAST SYSTEM =================
-        function showToast(message, type = 'success') {
-            const container = document.getElementById('toastContainer');
-            const toast = document.createElement('div');
-            toast.className = `toast ${type}`;
-            toast.innerText = message;
-            container.appendChild(toast);
-            setTimeout(() => {
-                if (toast.parentNode) toast.remove();
-            }, 2500);
-        }
-
-        // ================= AUTH LOGIC =================
-        function toggleAuthModal() {
-            document.getElementById('loginModal').style.display = 'flex';
-        }
-
-        function closeLoginModal() {
-            document.getElementById('loginModal').style.display = 'none';
-        }
-
-        function performLogin() {
-            const user = document.getElementById('loginUser').value.trim();
-            const pass = document.getElementById('loginPass').value.trim();
-            
-            if (user === 'Ishwar121212' && pass === 'Ishwar121212') {
-                isAdmin = true;
-                closeLoginModal();
-                updateAdminUI();
-                renderList();
-                showToast('✅ Admin Login Successful!');
-            } else {
-                showToast('❌ Wrong Username / Password', 'error');
-            }
-        }
-
-        function logoutUser() {
-            isAdmin = false;
-            updateAdminUI();
-            renderList();
-            showToast('👋 Logged out.');
-        }
-
-        function updateAdminUI() {
-            const form = document.getElementById('adminForm');
-            const btn = document.getElementById('authToggleBtn');
-            
-            if (isAdmin) {
-                form.classList.add('visible');
-                btn.innerText = '🚪 Logout';
-                btn.classList.add('logged');
-                btn.onclick = logoutUser;
-            } else {
-                form.classList.remove('visible');
-                btn.innerText = '🔐 Login';
-                btn.classList.remove('logged');
-                btn.onclick = toggleAuthModal;
-            }
-        }
-
-        // ================= ADD GAME =================
-        function addGame() {
-            if (!isAdmin) { 
-                showToast('Login as Admin first!', 'error'); 
-                return; 
+                if (raw) {
+                    try {
+                        const parsed = JSON.parse(raw);
+                        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+                    } catch (e) {}
+                }
+                // If no data or invalid, set defaults and return them
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_GAMES));
+                return [...DEFAULT_GAMES];
             }
 
-            const nameInput = document.getElementById('inputName');
-            const keyInput = document.getElementById('inputKey');
-            const iconInput = document.getElementById('inputImage');
-
-            const name = nameInput.value.trim();
-            const key = keyInput.value.trim();
-            const icon = iconInput.value.trim() || '🎮';
-
-            if (!name || !key) {
-                showToast('Please fill Name and Key!', 'error');
-                if (!name) nameInput.focus();
-                else keyInput.focus();
-                return;
+            // We will not use saveGames because no admin write access, 
+            // but keep function for potential internal consistency (not used)
+            function saveGames(games) {
+                if (!Array.isArray(games)) return;
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(games));
             }
 
-            const games = getGames();
-            const newGame = {
-                id: Date.now(),
-                name: name,
-                key: key,
-                icon: icon
-            };
-            
-            games.unshift(newGame); // Sabse upar new game add hoga
-            saveGames(games);
-
-            // Clear inputs
-            nameInput.value = '';
-            keyInput.value = '';
-            iconInput.value = '';
-            nameInput.focus();
-
-            renderList();
-            showToast(`✅ "${name}" added successfully!`);
-        }
-
-        // ================= DELETE GAME =================
-        function deleteGame(id) {
-            if (!isAdmin) return;
-            
-            const games = getGames();
-            const targetGame = games.find(g => g.id === id);
-            
-            if (!targetGame) return;
-            
-            if (confirm(`Kya aap "${targetGame.name}" ko delete karna chahte hain?`)) {
-                const updatedGames = games.filter(g => g.id !== id);
-                saveGames(updatedGames);
-                renderList();
-                showToast(`🗑️ "${targetGame.name}" deleted!`, 'error');
-            }
-        }
-
-        // ================= COPY KEY =================
-        function copyKey(id, btnElement) {
-            const games = getGames();
-            const game = games.find(g => g.id === id);
-            if (!game) return;
-
-            // Modern Clipboard API
-            if (navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard.writeText(game.key).then(() => {
-                    handleCopySuccess(btnElement, game.name);
-                }).catch(() => {
-                    fallbackCopy(game.key, btnElement, game.name);
-                });
-            } else {
-                fallbackCopy(game.key, btnElement, game.name);
-            }
-        }
-
-        function handleCopySuccess(btn, name) {
-            btn.innerText = '✅ Copied';
-            btn.classList.add('copied');
-            showToast(`📋 "${name}" key copied!`);
-            setTimeout(() => {
-                btn.innerText = 'Copy Key';
-                btn.classList.remove('copied');
-            }, 1500);
-        }
-
-        function fallbackCopy(text, btn, name) {
-            const textArea = document.createElement('textarea');
-            textArea.value = text;
-            document.body.appendChild(textArea);
-            textArea.select();
-            try {
-                document.execCommand('copy');
-                handleCopySuccess(btn, name);
-            } catch (err) {
-                showToast('Copy failed! Copy manually.', 'error');
-            }
-            document.body.removeChild(textArea);
-        }
-
-        // ================= RENDER LIST =================
-        function renderList() {
-            const games = getGames();
-            const listContainer = document.getElementById('gameList');
-
-            if (games.length === 0) {
-                listContainer.innerHTML = `
-                    <div class="empty-state">
-                        <div class="icon">📭</div>
-                        Koi game key nahi hai!<br>
-                        <span style="font-size:13px;">Upar form bhar ke apni pehli game key add karein.</span>
-                    </div>
-                `;
-                return;
+            // Initialize storage with defaults if empty
+            if (!localStorage.getItem(STORAGE_KEY)) {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_GAMES));
             }
 
-            let html = '';
-            games.forEach(game => {
-                // Icon handle karna (URL ho ya Emoji)
-                let iconHtml = '';
-                if (game.icon && game.icon.startsWith('http')) {
-                    iconHtml = `<img src="${game.icon}" alt="icon" onerror="this.parentNode.innerHTML='🎮'">`;
-                } else {
-                    iconHtml = game.icon || '🎮';
+            // ========== TOAST ==========
+            function showToast(message, type = 'success') {
+                const container = document.getElementById('toastContainer');
+                const toast = document.createElement('div');
+                toast.className = `toast ${type}`;
+                toast.innerText = message;
+                container.appendChild(toast);
+                setTimeout(() => {
+                    if (toast.parentNode) toast.remove();
+                }, 2500);
+            }
+
+            // ========== RENDER LIST ==========
+            function renderList() {
+                const games = getGames();
+                const listContainer = document.getElementById('gameList');
+
+                if (games.length === 0) {
+                    listContainer.innerHTML = `<div class="empty-state"><div class="icon">📭</div>No keys available</div>`;
+                    return;
                 }
 
-                // Delete button only visible to admin
-                const deleteBtnClass = isAdmin ? 'btn-delete visible' : 'btn-delete';
+                let html = '';
+                games.forEach(game => {
+                    let iconHtml = '';
+                    if (game.icon && game.icon.startsWith('http')) {
+                        iconHtml = `<img src="${game.icon}" alt="icon" onerror="this.parentNode.innerHTML='🎮'">`;
+                    } else {
+                        iconHtml = game.icon || '🎮';
+                    }
 
-                html += `
-                    <div class="game-item">
-                        <div class="game-icon">${iconHtml}</div>
-                        <div class="game-info">
-                            <div class="game-title">${game.name}</div>
-                            <div class="game-key">Key: ${game.key}</div>
+                    html += `
+                        <div class="game-item">
+                            <div class="game-icon">${iconHtml}</div>
+                            <div class="game-info">
+                                <div class="game-title">${game.name}</div>
+                                <div class="game-key">Key: ${game.key}</div>
+                            </div>
+                            <div class="item-actions">
+                                <button class="btn-copy" onclick="copyKey(${game.id}, this)">Copy Key</button>
+                            </div>
                         </div>
-                        <div class="item-actions">
-                            <button class="${deleteBtnClass}" onclick="deleteGame(${game.id})">✕</button>
-                            <button class="btn-copy" onclick="copyKey(${game.id}, this)">Copy Key</button>
-                        </div>
-                    </div>
-                `;
-            });
+                    `;
+                });
 
-            listContainer.innerHTML = html;
-        }
+                listContainer.innerHTML = html;
+            }
 
-        // ================= INITIALIZE =================
-        // Pehli baar mein list render karo
-        renderList();
-        updateAdminUI();
+            // ========== COPY KEY (exposed globally) ==========
+            window.copyKey = function(id, btnElement) {
+                const games = getGames();
+                const game = games.find(g => g.id === id);
+                if (!game) {
+                    showToast('Key not found!', 'error');
+                    return;
+                }
 
-        // Click kahi aur karein toh Modal band ho jaye
-        document.getElementById('loginModal').addEventListener('click', function(e) {
-            if (e.target === this) closeLoginModal();
-        });
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(game.key).then(() => {
+                        handleCopySuccess(btnElement, game.name);
+                    }).catch(() => {
+                        fallbackCopy(game.key, btnElement, game.name);
+                    });
+                } else {
+                    fallbackCopy(game.key, btnElement, game.name);
+                }
+            };
+
+            function handleCopySuccess(btn, name) {
+                btn.innerText = '✅ Copied';
+                btn.classList.add('copied');
+                showToast(`📋 "${name}" key copied!`);
+                setTimeout(() => {
+                    btn.innerText = 'Copy Key';
+                    btn.classList.remove('copied');
+                }, 1500);
+            }
+
+            function fallbackCopy(text, btn, name) {
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                    handleCopySuccess(btn, name);
+                } catch (err) {
+                    showToast('Copy failed! Copy manually.', 'error');
+                }
+                document.body.removeChild(textArea);
+            }
+
+            // ========== INITIALIZE ==========
+            renderList();
+
+            // Ensure no login modal or admin features remain.
+            // Also remove any leftover login button if any (we already didn't include it)
+            // For absolute safety, hide any auth elements if they existed (but they don't)
+            const authBtn = document.getElementById('authToggleBtn');
+            if (authBtn) authBtn.style.display = 'none';
+            
+            const adminForm = document.getElementById('adminForm');
+            if (adminForm) adminForm.style.display = 'none';
+
+            // Disable any accidental login modal if exists (from previous code)
+            const modal = document.getElementById('loginModal');
+            if (modal) modal.style.display = 'none';
+
+            // Override any potential admin functions
+            window.toggleAuthModal = function() {};
+            window.performLogin = function() {};
+            window.addGame = function() { showToast('Admin access removed', 'error'); };
+            window.deleteGame = function() { showToast('Admin access removed', 'error'); };
+        })();
     </script>
 </body>
 </html>
