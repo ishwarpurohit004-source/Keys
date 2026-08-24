@@ -289,7 +289,7 @@
 
     <script>
         (function() {
-            // ========== DEFAULT GAMES (from request) ==========
+            // ========== DEFAULT GAMES (includes "Brutal Dude Militia") ==========
             const DEFAULT_GAMES = [
                 {
                     id: 101,
@@ -314,6 +314,12 @@
                     name: "Bullet strike",
                     key: "WSMODS-20BS26",
                     icon: "https://yjjmibdxyezdjmaztnpm.supabase.co/storage/v1/object/public/app_9k1eb91gwmwx_mod_files/files/1785833795064_image_search_1785833517037.png"
+                },
+                {
+                    id: 105,
+                    name: "Brutal Dude Militia",
+                    key: "aWxvdmV5b3VsYWtzaGl0YQ==",
+                    icon: "https://yjjmibdxyezdjmaztnpm.supabase.co/storage/v1/object/public/app_9k1eb91gwmwx_mod_files/logos/1787563632665_image_search_1787561844075.jpg"
                 }
             ];
 
@@ -343,6 +349,14 @@
             // Initialize storage with defaults if empty
             if (!localStorage.getItem(STORAGE_KEY)) {
                 localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_GAMES));
+            } else {
+                // Ensure existing storage also includes the new game (in case old data was there)
+                const current = getGames();
+                const hasBrutal = current.some(g => g.id === 105);
+                if (!hasBrutal) {
+                    current.push(DEFAULT_GAMES.find(g => g.id === 105));
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(current));
+                }
             }
 
             // ========== TOAST ==========
@@ -442,7 +456,6 @@
 
             // Ensure no login modal or admin features remain.
             // Also remove any leftover login button if any (we already didn't include it)
-            // For absolute safety, hide any auth elements if they existed (but they don't)
             const authBtn = document.getElementById('authToggleBtn');
             if (authBtn) authBtn.style.display = 'none';
             
