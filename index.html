@@ -6,8 +6,18 @@
     <title>All Mods Keys • Secure</title>
     <style>
         /* ========== RESET & BODY ========== */
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, Arial, sans-serif; }
-        body { background: #e8e8e8; display: flex; justify-content: center; min-height: 100vh; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+        }
+        body {
+            background: #e8e8e8;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
 
         .app-container {
             width: 100%;
@@ -15,7 +25,7 @@
             background: #f9f9f9;
             min-height: 100vh;
             position: relative;
-            box-shadow: 0 0 20px rgba(0,0,0,0.08);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.08);
         }
 
         /* ========== HEADER ========== */
@@ -36,8 +46,13 @@
             color: #000;
             letter-spacing: -0.5px;
         }
-        .header-title span { font-size: 11px; color: #888; display: block; margin-top: 2px; }
-        
+        .header-title span {
+            font-size: 11px;
+            color: #888;
+            display: block;
+            margin-top: 2px;
+        }
+
         .auth-btn {
             background: transparent;
             border: 1px solid #000;
@@ -49,8 +64,14 @@
             color: #000;
             transition: 0.2s;
         }
-        .auth-btn:active { transform: scale(0.95); }
-        .auth-btn.logged { background: #d32f2f; color: #fff; border-color: #d32f2f; }
+        .auth-btn:active {
+            transform: scale(0.95);
+        }
+        .auth-btn.logged {
+            background: #d32f2f;
+            color: #fff;
+            border-color: #d32f2f;
+        }
 
         /* ========== ADMIN ADD FORM ========== */
         .admin-form {
@@ -60,10 +81,17 @@
             border-radius: 12px;
             border: 1px solid #e0e0e0;
             display: none;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
         }
-        .admin-form.visible { display: block; }
-        .admin-form h3 { font-size: 16px; margin-bottom: 10px; display: flex; gap: 8px; }
+        .admin-form.visible {
+            display: block;
+        }
+        .admin-form h3 {
+            font-size: 16px;
+            margin-bottom: 10px;
+            display: flex;
+            gap: 8px;
+        }
         .admin-form input {
             width: 100%;
             padding: 10px 12px;
@@ -74,7 +102,10 @@
             outline: none;
             background: #fafafa;
         }
-        .admin-form input:focus { border-color: #1a73e8; background: #fff; }
+        .admin-form input:focus {
+            border-color: #1a73e8;
+            background: #fff;
+        }
         .btn-submit-form {
             width: 100%;
             background: #1a73e8;
@@ -87,7 +118,9 @@
             cursor: pointer;
             transition: 0.2s;
         }
-        .btn-submit-form:active { transform: scale(0.98); }
+        .btn-submit-form:active {
+            transform: scale(0.98);
+        }
 
         /* ========== GAME LIST ========== */
         .game-list {
@@ -107,8 +140,10 @@
             background: #fff;
             position: relative;
         }
-        .game-item:last-child { border-bottom: none; }
-        
+        .game-item:last-child {
+            border-bottom: none;
+        }
+
         .game-icon {
             width: 48px;
             height: 48px;
@@ -122,7 +157,11 @@
             flex-shrink: 0;
             overflow: hidden;
         }
-        .game-icon img { width: 100%; height: 100%; object-fit: cover; }
+        .game-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
 
         .game-info {
             flex: 1;
@@ -168,9 +207,14 @@
             transition: all 0.2s;
             white-space: nowrap;
         }
-        .btn-copy:active { opacity: 0.7; transform: scale(0.95); }
-        .btn-copy.copied { background: #34a853; }
-        
+        .btn-copy:active {
+            opacity: 0.7;
+            transform: scale(0.95);
+        }
+        .btn-copy.copied {
+            background: #34a853;
+        }
+
         .btn-delete {
             background: transparent;
             border: none;
@@ -180,7 +224,9 @@
             display: none;
             padding: 0 4px;
         }
-        .btn-delete.visible { display: block; }
+        .btn-delete.visible {
+            display: block;
+        }
 
         /* ========== EMPTY STATE ========== */
         .empty-state {
@@ -189,12 +235,19 @@
             color: #888;
             font-size: 15px;
         }
-        .empty-state .icon { font-size: 40px; margin-bottom: 10px; }
+        .empty-state .icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
 
         /* ========== LOGIN MODAL ========== */
         .login-modal {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
             display: none;
             align-items: center;
             justify-content: center;
@@ -208,7 +261,10 @@
             max-width: 340px;
             text-align: center;
         }
-        .login-box h2 { font-size: 20px; margin-bottom: 20px; }
+        .login-box h2 {
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
         .login-box input {
             width: 100%;
             padding: 12px;
@@ -218,7 +274,9 @@
             font-size: 15px;
             outline: none;
         }
-        .login-box input:focus { border-color: #1a73e8; }
+        .login-box input:focus {
+            border-color: #1a73e8;
+        }
         .login-box .btn-login {
             width: 100%;
             background: #000;
@@ -255,23 +313,39 @@
             border-radius: 8px;
             font-weight: 500;
             font-size: 14px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
             animation: toastAnim 2.5s forwards;
             margin-bottom: 8px;
         }
-        .toast.error { background: #d32f2f; }
-        .toast.success { background: #1a73e8; }
+        .toast.error {
+            background: #d32f2f;
+        }
+        .toast.success {
+            background: #1a73e8;
+        }
         @keyframes toastAnim {
-            0% { transform: translateY(-30px); opacity: 0; }
-            15% { transform: translateY(0); opacity: 1; }
-            85% { transform: translateY(0); opacity: 1; }
-            100% { transform: translateY(-30px); opacity: 0; }
+            0% {
+                transform: translateY(-30px);
+                opacity: 0;
+            }
+            15% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+            85% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-30px);
+                opacity: 0;
+            }
         }
     </style>
 </head>
 <body>
     <div class="app-container">
-        <!-- HEADER (Login option removed) -->
+        <!-- HEADER -->
         <div class="app-header">
             <div class="header-title">
                 <h1>All Mods Keys</h1>
@@ -289,48 +363,46 @@
 
     <script>
         (function() {
-            // ========== DEFAULT GAMES (includes "Brutal Dude Militia") ==========
-            const DEFAULT_GAMES = [
-                {
-                    id: 101,
-                    name: "Snake lite",
-                    key: "QmhhcmF0IE1lcmEgRGVzaCBIYQ==",
-                    icon: "https://yjjmibdxyezdjmaztnpm.supabase.co/storage/v1/object/public/app_9k1eb91gwmwx_mod_files/logos/1787215465560_image_search_1787212405177.png"
-                },
-                {
-                    id: 102,
-                    name: "Supermario",
-                    key: "U3VwZXJNYXJpb1R3b0hE",
-                    icon: "https://yjjmibdxyezdjmaztnpm.supabase.co/storage/v1/object/public/app_9k1eb91gwmwx_mod_files/logos/1786436383890_image_search_1786436375770.jpg"
-                },
-                {
-                    id: 103,
-                    name: "Stickmanworrior",
-                    key: "U3RpY2ttYW4gV2FycmlvcnM=",
-                    icon: "https://yjjmibdxyezdjmaztnpm.supabase.co/storage/v1/object/public/app_9k1eb91gwmwx_mod_files/logos/1786182541287_image_search_1786180514543.png"
-                },
-                {
-                    id: 104,
-                    name: "Bullet strike",
-                    key: "WSMODS-20BS26",
-                    icon: "https://yjjmibdxyezdjmaztnpm.supabase.co/storage/v1/object/public/app_9k1eb91gwmwx_mod_files/files/1785833795064_image_search_1785833517037.png"
-                },
-                {
-                    id: 105,
-                    name: "Brutal Dude Militia",
-                    key: "aWxvdmV5b3VsYWtzaGl0YQ==",
-                    icon: "https://yjjmibdxyezdjmaztnpm.supabase.co/storage/v1/object/public/app_9k1eb91gwmwx_mod_files/logos/1787563632665_image_search_1787561844075.jpg"
-                },
-{
-    id: 106,
-    name: "Mobile Bus Simulator",
-    key: "KEY-2026-MBS-WSMODS-9583",
-    icon: "https://nmhzrbathgtctjdlgtfv.supabase.co/storage/v1/object/public/uploads/1787881823522_app_icon.png"
-}
-            ];
+            // ========== DEFAULT GAMES ==========
+            const DEFAULT_GAMES = [{
+                id: 101,
+                name: "Snake lite",
+                key: "QmhhcmF0IE1lcmEgRGVzaCBIYQ==",
+                icon: "https://yjjmibdxyezdjmaztnpm.supabase.co/storage/v1/object/public/app_9k1eb91gwmwx_mod_files/logos/1787215465560_image_search_1787212405177.png"
+            }, {
+                id: 102,
+                name: "Supermario",
+                key: "U3VwZXJNYXJpb1R3b0hE",
+                icon: "https://yjjmibdxyezdjmaztnpm.supabase.co/storage/v1/object/public/app_9k1eb91gwmwx_mod_files/logos/1786436383890_image_search_1786436375770.jpg"
+            }, {
+                id: 103,
+                name: "Stickmanworrior",
+                key: "U3RpY2ttYW4gV2FycmlvcnM=",
+                icon: "https://yjjmibdxyezdjmaztnpm.supabase.co/storage/v1/object/public/app_9k1eb91gwmwx_mod_files/logos/1786182541287_image_search_1786180514543.png"
+            }, {
+                id: 104,
+                name: "Bullet strike",
+                key: "WSMODS-20BS26",
+                icon: "https://yjjmibdxyezdjmaztnpm.supabase.co/storage/v1/object/public/app_9k1eb91gwmwx_mod_files/files/1785833795064_image_search_1785833517037.png"
+            }, {
+                id: 105,
+                name: "Brutal Dude Militia",
+                key: "aWxvdmV5b3VsYWtzaGl0YQ==",
+                icon: "https://yjjmibdxyezdjmaztnpm.supabase.co/storage/v1/object/public/app_9k1eb91gwmwx_mod_files/logos/1787563632665_image_search_1787561844075.jpg"
+            }, {
+                id: 106,
+                name: "Mobile Bus Simulator",
+                key: "KEY-2026-MBS-WSMODS-9583",
+                icon: "https://nmhzrbathgtctjdlgtfv.supabase.co/storage/v1/object/public/uploads/1787881823522_app_icon.png"
+            }, {
+                id: 107,
+                name: "GTA San Andreas",
+                key: "R1RBLVNB LVTIWFO",
+                icon: "https://yjjmibdxyezdjmaztnpm.supabase.co/storage/v1/object/public/app_9k1eb91gwmwx_mod_files/logos/1787215465560_image_search_1787212405177.png"
+            }];
 
-            // Storage key (we'll initialize if empty, but no admin editing)
-            const STORAGE_KEY = 'modKeys_fixed_data_v2';
+            // Storage key
+            const STORAGE_KEY = 'modKeys_fixed_data_v3';
 
             function getGames() {
                 const raw = localStorage.getItem(STORAGE_KEY);
@@ -340,13 +412,10 @@
                         if (Array.isArray(parsed) && parsed.length > 0) return parsed;
                     } catch (e) {}
                 }
-                // If no data or invalid, set defaults and return them
                 localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_GAMES));
                 return [...DEFAULT_GAMES];
             }
 
-            // We will not use saveGames because no admin write access, 
-            // but keep function for potential internal consistency (not used)
             function saveGames(games) {
                 if (!Array.isArray(games)) return;
                 localStorage.setItem(STORAGE_KEY, JSON.stringify(games));
@@ -356,12 +425,17 @@
             if (!localStorage.getItem(STORAGE_KEY)) {
                 localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_GAMES));
             } else {
-                // Ensure existing storage also includes the new game (in case old data was there)
+                // Ensure existing storage also includes any new games (merge by id)
                 const current = getGames();
-                const hasBrutal = current.some(g => g.id === 105);
-                if (!hasBrutal) {
-                    current.push(DEFAULT_GAMES.find(g => g.id === 105));
-                    localStorage.setItem(STORAGE_KEY, JSON.stringify(current));
+                let updated = false;
+                DEFAULT_GAMES.forEach(defGame => {
+                    if (!current.some(g => g.id === defGame.id)) {
+                        current.push(defGame);
+                        updated = true;
+                    }
+                });
+                if (updated) {
+                    saveGames(current);
                 }
             }
 
@@ -383,7 +457,8 @@
                 const listContainer = document.getElementById('gameList');
 
                 if (games.length === 0) {
-                    listContainer.innerHTML = `<div class="empty-state"><div class="icon">📭</div>No keys available</div>`;
+                    listContainer.innerHTML =
+                        `<div class="empty-state"><div class="icon">📭</div>No keys available</div>`;
                     return;
                 }
 
@@ -391,7 +466,8 @@
                 games.forEach(game => {
                     let iconHtml = '';
                     if (game.icon && game.icon.startsWith('http')) {
-                        iconHtml = `<img src="${game.icon}" alt="icon" onerror="this.parentNode.innerHTML='🎮'">`;
+                        iconHtml =
+                            `<img src="${game.icon}" alt="icon" onerror="this.parentNode.innerHTML='🎮'">`;
                     } else {
                         iconHtml = game.icon || '🎮';
                     }
@@ -460,23 +536,25 @@
             // ========== INITIALIZE ==========
             renderList();
 
-            // Ensure no login modal or admin features remain.
-            // Also remove any leftover login button if any (we already didn't include it)
+            // Remove any leftover login/admin elements (safety)
             const authBtn = document.getElementById('authToggleBtn');
             if (authBtn) authBtn.style.display = 'none';
-            
+
             const adminForm = document.getElementById('adminForm');
             if (adminForm) adminForm.style.display = 'none';
 
-            // Disable any accidental login modal if exists (from previous code)
             const modal = document.getElementById('loginModal');
             if (modal) modal.style.display = 'none';
 
             // Override any potential admin functions
             window.toggleAuthModal = function() {};
             window.performLogin = function() {};
-            window.addGame = function() { showToast('Admin access removed', 'error'); };
-            window.deleteGame = function() { showToast('Admin access removed', 'error'); };
+            window.addGame = function() {
+                showToast('Admin access removed', 'error');
+            };
+            window.deleteGame = function() {
+                showToast('Admin access removed', 'error');
+            };
         })();
     </script>
 </body>
